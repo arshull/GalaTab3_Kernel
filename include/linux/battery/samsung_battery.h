@@ -296,14 +296,14 @@ enum status_full_type {
 #define ADC_ERR_DELAY	200
 
 /* WORKAROUND: define audio dock current */
-#define DOCK_TYPE_AUDIO_CURR		1000
+#define DOCK_TYPE_AUDIO_CURR		1500
 #define DOCK_TYPE_SMART_NOTG_CURR	1700
-#define DOCK_TYPE_SMART_OTG_CURR	1000
-#define DOCK_TYPE_LOW_CURR		475
+#define DOCK_TYPE_SMART_OTG_CURR	1500
+#define DOCK_TYPE_LOW_CURR		1500
 
 /* Define current on HDMI connection (for seperate HDMI connector) */
 #if defined(CONFIG_MACH_GD2)
-#define HDMI_CONTROL_CURR	1000
+#define HDMI_CONTROL_CURR	1500
 #endif
 
 /* voltage diff for recharge voltage calculation */

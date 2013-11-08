@@ -564,7 +564,8 @@ void s3cfb_early_suspend(struct early_suspend *h)
 			pdata->lcd_off(pdev);
 
 		info->system_state = POWER_OFF;
-		flush_kthread_worker(&fbdev[i]->update_regs_worker);
+		if (info->support_fence == FENCE_SUPPORT)
+		  flush_kthread_worker(&fbdev[i]->update_regs_worker);
 
 		/* Disable Vsync */
 		s3cfb_set_global_interrupt(fbdev[i], 0);
@@ -893,7 +894,8 @@ static int s3cfb_disable(struct s3cfb_global *fbdev)
 	mutex_lock(&fbdev->output_lock);
 
 	fbdev->system_state = POWER_OFF;
-	flush_kthread_worker(&fbdev->update_regs_worker);
+	if (fbdev->support_fence == FENCE_NOT_SUPPORT)
+ 	  flush_kthread_worker(&fbdev->update_regs_worker);
 
 	if (fbdev->suspend)
 		return 0;
@@ -1166,6 +1168,7 @@ static int s3cfb_probe(struct platform_device *pdev)
 		init_kthread_work(&fbdev[i]->update_regs_work, s3c_fb_update_regs_handler);
 		fbdev[i]->timeline = sw_sync_timeline_create("s3c-fb");
 		fbdev[i]->timeline_max = 0;
+		fbdev[i]->support_fence = FENCE_SUPPORT;
 #endif
 
 		/* irq */

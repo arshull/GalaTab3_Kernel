@@ -53,7 +53,7 @@ int gVolt = 5000;
 #define CLK_DIV_STAT_G3D 	0x1003C62C
 #define CLK_DESC 			"clk-divider-status"
 
-#define MALI_BOTTOMLOCK_VOL	900000
+#define MALI_BOTTOMLOCK_VOL	600000
 
 typedef struct mali_runtime_resumeTag{
 	int clk;
@@ -515,7 +515,8 @@ static mali_bool deinit_mali_clock(void)
 
 	return MALI_TRUE;
 }
-static _mali_osk_errcode_t enable_mali_clocks(void)
+
+_mali_osk_errcode_t enable_mali_clocks(void)
 {
 	int err;
 	err = clk_enable(mali_clock);
@@ -544,6 +545,7 @@ static _mali_osk_errcode_t enable_mali_clocks(void)
 #else
 	mali_clk_set_rate(mali_gpu_clk, GPU_MHZ);
 #endif
+
 	MALI_SUCCESS;
 }
 

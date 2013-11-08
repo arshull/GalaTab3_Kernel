@@ -100,21 +100,27 @@ static uint32_t minimum_interval_time = MIN_CSWAP_INTERVAL;
 static uint32_t lmk_count = 0;
 #endif
 
-static uint32_t lowmem_debug_level = 2;
-static int lowmem_adj[6] = {
+static uint32_t lowmem_debug_level = 1;
+
+static int lowmem_adj[] = {
 	0,
 	1,
-	6,
-	12,
+	2,
+	4,
+	8,
+	15,
 };
-static int lowmem_adj_size = 4;
-static size_t lowmem_minfree[6] = {
-	3 * 512,	/* 6MB */
-	2 * 1024,	/* 8MB */
-	4 * 1024,	/* 16MB */
-	16 * 1024,	/* 64MB */
+static int lowmem_minfree[] = {
+  8096,
+  10240,
+  20480,
+  20480,
+  51200,
+  102400,
 };
-static int lowmem_minfree_size = 4;
+
+static int lowmem_adj_size = ARRAY_SIZE(lowmem_adj);
+static int lowmem_minfree_size = ARRAY_SIZE(lowmem_minfree);
 
 #ifdef ENHANCED_LMK_ROUTINE
 static struct task_struct *lowmem_deathpending[LOWMEM_DEATHPENDING_DEPTH] = {NULL,};
@@ -209,10 +215,7 @@ static int lowmem_shrink(struct shrinker *s, struct shrink_control *sc)
 		return 0;
 #endif
 
-	if (lowmem_adj_size < array_size)
-		array_size = lowmem_adj_size;
-	if (lowmem_minfree_size < array_size)
-		array_size = lowmem_minfree_size;
+	
 	for (i = 0; i < array_size; i++) {
 		if (other_free < lowmem_minfree[i] &&
 		    other_file < lowmem_minfree[i]) {
