@@ -1,0 +1,4 @@
+kernel/drivers/sensor/k3dh.ko
+kernel/drivers/sensor/yas_mag_kernel_driver.ko
+kernel/drivers/sensor/yas_ori_kernel_driver.ko
+kernel/drivers/sensor/cm3323.ko

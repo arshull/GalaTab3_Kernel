@@ -1,0 +1,1 @@
+cmd_drivers/regulator/built-in.o :=  /home/adam/Android/Toolchains/arm-eabi-4.4.3/bin/arm-eabi-ld -EL    -r -o drivers/regulator/built-in.o drivers/regulator/core.o drivers/regulator/dummy.o drivers/regulator/fixed.o drivers/regulator/max77693.o drivers/regulator/wm8994-regulator.o drivers/regulator/s5m8767.o 

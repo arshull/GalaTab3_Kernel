@@ -1,0 +1,1 @@
+cmd_drivers/exfat/exfat_core.o := /home/adam/Android/Toolchains/arm-eabi-4.4.3/bin/arm-eabi-ld -EL    -r -o drivers/exfat/exfat_core.o drivers/exfat/exfat.o drivers/exfat/exfat_api.o drivers/exfat/exfat_blkdev.o drivers/exfat/exfat_cache.o drivers/exfat/exfat_data.o drivers/exfat/exfat_global.o drivers/exfat/exfat_nls.o drivers/exfat/exfat_oal.o drivers/exfat/exfat_upcase.o 

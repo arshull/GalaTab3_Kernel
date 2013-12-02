@@ -1,0 +1,3 @@
+kernel/drivers/misc/lkdtm.ko
+kernel/drivers/misc/tzic.ko
+kernel/drivers/misc/cpu_undervolting.ko

@@ -1,0 +1,1 @@
+cmd_drivers/gud20/mcDrvModule.o := /home/adam/Android/Toolchains/arm-eabi-4.4.3/bin/arm-eabi-ld -EL    -r -o drivers/gud20/mcDrvModule.o drivers/gud20/MobiCoreDriver/logging.o drivers/gud20/MobiCoreDriver/ops.o drivers/gud20/MobiCoreDriver/mem.o drivers/gud20/MobiCoreDriver/api.o drivers/gud20/MobiCoreDriver/pm.o drivers/gud20/MobiCoreDriver/main.o 
