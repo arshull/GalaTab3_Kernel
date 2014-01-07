@@ -288,28 +288,28 @@ static bool sec_bat_get_temperature_callback(
 static bool sec_fg_fuelalert_process(bool is_fuel_alerted) { return true; }
 
 static sec_bat_adc_region_t cable_adc_value_table[] = {
-	{ 0,    0 },    /* POWER_SUPPLY_TYPE_UNKNOWN */
+	{ 1000, 1500 },    /* POWER_SUPPLY_TYPE_UNKNOWN */
 	{ 0,    500 },  /* POWER_SUPPLY_TYPE_BATTERY */
 	{ 0,    0 },    /* POWER_SUPPLY_TYPE_UPS */
 	{ 1000, 1500 }, /* POWER_SUPPLY_TYPE_MAINS */
-	{ 0,    0 },    /* POWER_SUPPLY_TYPE_USB */
-	{ 0,    0 },    /* POWER_SUPPLY_TYPE_OTG */
-	{ 0,    0 },    /* POWER_SUPPLY_TYPE_DOCK */
-	{ 0,    0 },    /* POWER_SUPPLY_TYPE_MISC */
+	{ 1000, 1500 },    /* POWER_SUPPLY_TYPE_USB */
+	{ 1000, 1500 },    /* POWER_SUPPLY_TYPE_OTG */
+	{ 1000, 1500 },    /* POWER_SUPPLY_TYPE_DOCK */
+	{ 1000, 1500 },    /* POWER_SUPPLY_TYPE_MISC */
 };
 
 static sec_charging_current_t charging_current_table[] = {
-	{0,     0,      0,      0},     /* POWER_SUPPLY_TYPE_UNKNOWN */
+	{1500,     1500,      0,      0},     /* POWER_SUPPLY_TYPE_UNKNOWN */
 	{0,     0,      0,      0},     /* POWER_SUPPLY_TYPE_BATTERY */
 	{0,     0,      0,      0},     /* POWER_SUPPLY_TYPE_UPS */
 	{1800,  2000,   200,    0},     /* POWER_SUPPLY_TYPE_MAINS */
-	{1000,  1000,   200,    0},     /* POWER_SUPPLY_TYPE_USB */
-	{1000,  1000,   200,    0},     /* POWER_SUPPLY_TYPE_USB_DCP */
-	{1000,  1000,   200,    0},     /* POWER_SUPPLY_TYPE_USB_CDP */
-	{800,   800,    200,    0},     /* POWER_SUPPLY_TYPE_USB_ACA */
-	{1000,  1000,   200,    0},     /* POWER_SUPPLY_TYPE_OTG */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_USB */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_USB_DCP */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_USB_CDP */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_USB_ACA */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_OTG */
 	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_DOCK */
-	{1000,  1000,   200,    0},     /* POWER_SUPPLY_TYPE_MISC */
+	{1500,  1500,   200,    0},     /* POWER_SUPPLY_TYPE_MISC */
 	{0,     0,      0,      0},     /* POWER_SUPPLY_TYPE_WIRELESS */
 };
 

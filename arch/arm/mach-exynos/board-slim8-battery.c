@@ -66,15 +66,15 @@ static sec_charging_current_t charging_current_table[] = {
 	{0,     0,      0,      0},		/* POWER_SUPPLY_TYPE_BATTERY */
 	{0,     0,      0,      0},		/* POWER_SUPPLY_TYPE_UPS */
 	{1800,  1800,   250,    40*60},		/* POWER_SUPPLY_TYPE_MAINS */
-	{500,   500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_USB */
-	{500,   500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_DCP */
-	{500,   500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_CDP */
-	{500,   500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_ACA */
+	{1500,  1500,   250,    40*60},     	/* POWER_SUPPLY_TYPE_USB */
+	{1500,  1500,   250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_DCP */
+	{1500,  1500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_CDP */
+	{1500,   1500,  250,    40*60},     	/* POWER_SUPPLY_TYPE_USB_ACA */
 	{1800,  1800,   250,    40*60},     	/* POWER_SUPPLY_TYPE_MISC */
 	{0,     0,      0,      0},     	/* POWER_SUPPLY_TYPE_CARDOCK */
 	{500,   500,    250,    40*60},     	/* POWER_SUPPLY_TYPE_WIRELESS */
 	{1800,  1800,   250,    40*60},     	/* POWER_SUPPLY_TYPE_UARTOFF */
-	{500,   500,    250,    40*60},		/* POWER_SUPPLY_TYPE_OTG */
+	{1500,  1500,   250,    40*60},		/* POWER_SUPPLY_TYPE_OTG */
 };
 
 static bool sec_bat_gpio_init(void) 	{ return true; }

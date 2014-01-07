@@ -789,10 +789,10 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	.in_curr_limit = 1000,
 
 	.chg_curr_ta = 1000,
-	.chg_curr_usb = 1500,
+	.chg_curr_usb = 475,
 	.chg_curr_cdp = 1000,
 	.chg_curr_wpc = 475,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 	.chg_curr_etc = 475,
 
 	.chng_interval = 30,

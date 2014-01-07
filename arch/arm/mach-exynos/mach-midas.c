@@ -2352,15 +2352,15 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 #if defined(CONFIG_MACH_GC1_USA_ATT)
 	.in_curr_limit = 700,
 	.chg_curr_ta = 700,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 700,
 #elif defined(CONFIG_TARGET_LOCALE_KOR) || defined(CONFIG_MACH_GC1_USA_VZW)
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1200,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 #else
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1000,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 #endif
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
@@ -2384,34 +2384,34 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	defined(CONFIG_MACH_BAFFIN_KOR_LGT)
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1500,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 475,
 #elif defined(CONFIG_MACH_SUPERIOR_KOR_SKT)
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1500,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 475,
 #elif defined(CONFIG_MACH_ZEST)
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 900,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 900,
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 475,
 #else
 	.in_curr_limit = 1000,
 	.chg_curr_ta = 1000,
-	.chg_curr_dock = 1500,
+	.chg_curr_dock = 1000,
 	.chg_curr_siop_lv1 = 475,
 	.chg_curr_siop_lv2 = 475,
 	.chg_curr_siop_lv3 = 475,
 #endif
 
-	.chg_curr_usb = 1000,
+	.chg_curr_usb = 475,
 	.chg_curr_cdp = 1000,
 #if defined(CONFIG_MACH_T0_USA_VZW)
 	.chg_curr_wpc = 650,

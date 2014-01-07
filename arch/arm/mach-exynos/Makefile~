@@ -37,6 +37,7 @@ else
 obj-$(CONFIG_EXYNOS4_CPUFREQ)  += asv-4x12.o
 obj-$(CONFIG_EXYNOS4_CPUFREQ)  += cpufreq-4x12.o
 endif
+
 obj-$(CONFIG_ABB_CONTROL)  += abb_control.o
 
 obj-$(CONFIG_EXYNOS5_CPUFREQ)	+= asv.o asv-5250.o
@@ -106,6 +107,7 @@ else
 ifeq ($(CONFIG_MACH_TAB3),y)
 ifeq ($(CONFIG_TAB3_00_BD),y)
 obj-$(CONFIG_MACH_MIDAS)		+= mach-tab3.o px-switch.o tab3-jack.o board-tab3-battery.o \
+obj-$(CONFIG_RQ_STATS)      += rq_stats.o
 								   midas-thermistor.o
 else
 obj-$(CONFIG_MACH_MIDAS)		+= mach-tab3.o tab3-jack.o board-slim8-battery.o midas-thermistor.o

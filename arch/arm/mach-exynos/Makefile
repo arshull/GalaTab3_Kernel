@@ -37,6 +37,7 @@ else
 obj-$(CONFIG_EXYNOS4_CPUFREQ)  += asv-4x12.o
 obj-$(CONFIG_EXYNOS4_CPUFREQ)  += cpufreq-4x12.o
 endif
+
 obj-$(CONFIG_ABB_CONTROL)  += abb_control.o
 
 obj-$(CONFIG_EXYNOS5_CPUFREQ)	+= asv.o asv-5250.o
@@ -63,6 +64,7 @@ obj-$(CONFIG_HOTPLUG_CPU)	+= hotplug.o
 
 obj-$(CONFIG_STAND_ALONE_POLICY)	+= stand-hotplug.o
 obj-$(CONFIG_LEGACY_HOTPLUG_POLICY)	+= pm-hotplug.o
+obj-$(CONFIG_INTELLI_PLUG) 		+= intelli_plug.o
 obj-$(CONFIG_WITH_DVFS_POLICY)		+= dvfs-hotplug.o
 obj-$(CONFIG_DVFS_NR_RUNNING_POLICY)	+= dynamic-dvfs-nr_running-hotplug.o
 obj-$(CONFIG_NR_RUNNING_POLICY)		+= dynamic-nr_running-hotplug.o
@@ -106,6 +108,7 @@ else
 ifeq ($(CONFIG_MACH_TAB3),y)
 ifeq ($(CONFIG_TAB3_00_BD),y)
 obj-$(CONFIG_MACH_MIDAS)		+= mach-tab3.o px-switch.o tab3-jack.o board-tab3-battery.o \
+obj-$(CONFIG_RQ_STATS)      += rq_stats.o
 								   midas-thermistor.o
 else
 obj-$(CONFIG_MACH_MIDAS)		+= mach-tab3.o tab3-jack.o board-slim8-battery.o midas-thermistor.o
@@ -450,6 +453,7 @@ obj-$(CONFIG_SND_SOC_SAMSUNG_OM_YMU831)	+= watch-sound-y.o
 
 # for audio platform data driver
 obj-$(CONFIG_EXYNOS_SOUND_PLATFORM_DATA)	+= exynos_sound_platform_data.o
+
 
 ifeq ($(CONFIG_GPS_BCMxxxxx),y)
 obj-$(CONFIG_GPS_BCM47511)		+= sec_gps_bcm47511.o

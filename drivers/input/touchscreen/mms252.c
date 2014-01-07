@@ -14,9 +14,10 @@
  *
  */
 
-#define DEBUG
+/* #define DEBUG */
 /* #define VERBOSE_DEBUG */
 #define SEC_TSP_DEBUG
+#define DEBUG_PRINT 0
 
 /* #define FORCE_FW_FLASH */
 /* #define FORCE_FW_PASS */
@@ -88,7 +89,6 @@
 #define CMD_GET_JITTER	0X46
 #define CMD_GET_INTEN	0x70
 #define CMD_GET_INTEN_KEY	0x71
-#define CMD_GET_CMDELTA_KEY	0x4A
 #define CMD_RESULT_SZ	0XAE
 #define CMD_RESULT		0XAF
 
@@ -145,12 +145,12 @@ int touch_is_pressed;
 /* ILJIN panel */
 #define BOOT_VERSION_IJ 0x1
 #define CORE_VERSION_IJ 0x73
-#define FW_VERSION_IJ 0x17
+#define FW_VERSION_IJ 0x16
 
 /* EELY panel */
 #define BOOT_VERSION_EL 0x1
 #define CORE_VERSION_EL 0x73
-#define FW_VERSION_EL 0x17
+#define FW_VERSION_EL 0x16
 
 #define MAX_FW_PATH 255
 #define TSP_FW_FILENAME "melfas_fw.bin"
@@ -162,7 +162,7 @@ int touch_is_pressed;
 
 #define MMS_CMD_ENTER_ISC	0x5F
 
-#define FLASH_VERBOSE_DEBUG	1
+#define FLASH_VERBOSE_DEBUG	0
 
 enum {
 	ISC_NONE = -1,
@@ -248,8 +248,6 @@ struct mms_ts_info {
 #if defined(SEC_TSP_FACTORY_TEST)
 	int menu_s;
 	int back_s;
-	int menu_delta;
-	int back_delta;
 #endif
 #endif
 
@@ -414,8 +412,10 @@ static void change_dvfs_lock(struct work_struct *work)
 	if (ret < 0)
 		pr_err("%s: dev change bud lock failed(%d)\n",\
 				__func__, __LINE__);
+#if DEBUG_PRINT
 	else
-		pr_info("[TSP] change_dvfs_lock");
+		pr_info("[TSP] change_dvfs_lock\n");
+#endif
 	mutex_unlock(&info->dvfs_lock);
 }
 static void set_dvfs_off(struct work_struct *work)
@@ -434,7 +434,9 @@ static void set_dvfs_off(struct work_struct *work)
 
 	exynos_cpufreq_lock_free(DVFS_LOCK_ID_TSP);
 	info->dvfs_lock_status = false;
+#if DEBUG_PRINT
 	pr_info("[TSP] DVFS Off!");
+#endif
 	mutex_unlock(&info->dvfs_lock);
 	}
 
@@ -475,7 +477,9 @@ static void set_dvfs_lock(struct mms_ts_info *info, uint32_t on)
 				msecs_to_jiffies(TOUCH_BOOSTER_CHG_TIME));
 
 			info->dvfs_lock_status = true;
+#if DEBUG_PRINT
 			pr_info("[TSP] DVFS On![%d]", info->cpufreq_level);
+#endif
 		}
 	} else if (on == 2) {
 		cancel_delayed_work(&info->work_dvfs_off);
@@ -547,23 +551,33 @@ static void release_all_fingers(struct mms_ts_info *info)
 	input_sync(info->input_dev);
 #if TOUCH_BOOSTER
 	set_dvfs_lock(info, 2);
+#if DEBUG_PRINT
 	pr_info("[TSP] dvfs_lock free.\n ");
+#endif
 #endif
 }
 
 static void mms_set_noise_mode(struct mms_ts_info *info)
 {
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
 	if (!(info->noise_mode && info->enabled))
 		return;
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s\n", __func__);
+#endif
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "noise_mode & TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x30, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "noise_mode & TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x30, 0x2);
 		info->noise_mode = 0;
 	}
@@ -591,12 +605,16 @@ static int mms_reset(struct mms_ts_info *info)
 
 static void reset_mms_ts(struct mms_ts_info *info)
 {
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
 	if (info->enabled == false)
 		return;
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s++\n", __func__);
+#endif
 	disable_irq_nosync(info->irq);
 	info->enabled = false;
 	touch_is_pressed = 0;
@@ -607,35 +625,49 @@ static void reset_mms_ts(struct mms_ts_info *info)
 
 	info->enabled = true;
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	mms_set_noise_mode(info);
 
 	enable_irq(info->irq);
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s--\n", __func__);
+#endif
 }
 
 static void melfas_ta_cb(struct tsp_callbacks *cb, bool ta_status)
 {
 	struct mms_ts_info *info =
 			container_of(cb, struct mms_ts_info, callbacks);
+#if DEBUG_PRINT
 	struct i2c_client *client = info->client;
+#endif
 
+#if DEBUG_PRINT
 	dev_notice(&client->dev, "%s\n", __func__);
+#endif
 
 	info->ta_status = ta_status;
 
 	if (info->enabled) {
 		if (info->ta_status) {
+#if DEBUG_PRINT
 			dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 			i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 		} else {
+#if DEBUG_PRINT
 			dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 			i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 		}
 		mms_set_noise_mode(info);
@@ -763,8 +795,10 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 				input_report_key(info->input_dev,
 					info->keycode[keycode], 0);
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
 					"key R(%d)\n", info->panel);
+#endif
 #else
 				dev_notice(&client->dev,
 					"key R : %d(%d)(%d)\n",
@@ -775,8 +809,10 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 				input_report_key(info->input_dev,
 					info->keycode[keycode], 1);
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
 					"key P(%d)\n", info->panel);
+#endif
 #else
 				dev_notice(&client->dev,
 					"key P : %d(%d)(%d)\n",
@@ -840,14 +876,16 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
 			if (info->finger_state[id] != 0) {
 				info->finger_state[id] = 0;
+#if DEBUG_PRINT
 				dev_notice(&client->dev,
-					"R [%2d](%d)", id, info->panel);
+					"R [%2d](%d)\n", id, info->panel);
+#endif
 			}
 #else /*CONFIG_SAMSUNG_PRODUCT_SHIP */
 			if (info->finger_state[id] != 0) {
 				info->finger_state[id] = 0;
 				dev_notice(&client->dev,
-					"R [%2d],([%4d],[%3d])(%d)",
+					"R [%2d],([%4d],[%3d])(%d)\n",
 					id, x, y, info->panel);
 			}
 
@@ -875,14 +913,16 @@ static irqreturn_t mms_ts_interrupt(int irq, void *dev_id)
 #ifdef CONFIG_SAMSUNG_PRODUCT_SHIP
 		if (info->finger_state[id] == 0) {
 			info->finger_state[id] = 1;
+#if DEBUG_PRINT
 			dev_notice(&client->dev,
-				"P [%2d](%d)", id, info->panel);
+				"P [%2d](%d)\n", id, info->panel);
+#endif
 		}
 #else /* CONFIG_SAMSUNG_PRODUCT_SHIP */
 		if (info->finger_state[id] == 0) {
 			info->finger_state[id] = 1;
 			dev_notice(&client->dev,
-				"P [%2d],([%3d],[%4d]) w=%d, major=%d, minor=%d, angle=%d, palm=%d(%d)",
+				"P [%2d],([%3d],[%4d]) w=%d, major=%d, minor=%d, angle=%d, palm=%d(%d)\n",
 				id, x, y, tmp[4], tmp[6], tmp[7],
 				angle, palm, info->panel);
 		}
@@ -1214,10 +1254,14 @@ static void get_raw_data(struct mms_ts_info *info, u8 cmd)
 	info->enabled = true;
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&info->client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&info->client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	mms_set_noise_mode(info);
@@ -1915,11 +1959,11 @@ static void get_config_ver(void *device_data)
 	else if (info->panel == WINTEC)
 		snprintf(buff, sizeof(buff), "T311_Me_0401_WT");
 	else if (info->panel == ILJIN)
-		snprintf(buff, sizeof(buff), "T311_Me_0708_IJ");
+		snprintf(buff, sizeof(buff), "T311_Me_0608_IJ");
 	else if (info->panel == EELY)
-		snprintf(buff, sizeof(buff), "T311_Me_0708_EL");
+		snprintf(buff, sizeof(buff), "T311_Me_0608_EL");
 	else
-		snprintf(buff, sizeof(buff), "T311_Me_0708_UN");
+		snprintf(buff, sizeof(buff), "T311_Me_0608_UN");
 
 	set_cmd_result(info, buff, strnlen(buff, sizeof(buff)));
 	info->cmd_state = 2;
@@ -2421,11 +2465,15 @@ static ssize_t touch_led_control(struct device *dev,
 	}
 
 	if (data == 1) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "led on\n");
+#endif
 		info->pdata->keyled(1);
 		info->led_cmd = true;
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "led off\n");
+#endif
 		info->pdata->keyled(0);
 		info->led_cmd = false;
 	}
@@ -2448,151 +2496,6 @@ static ssize_t touchkey_threshold_show(struct device *dev,
 	}
 
 	return sprintf(buf, "%d %d\n", r_buf[0], r_buf[1]);
-}
-
-static void get_cmdelta_key(struct mms_ts_info *info)
-{
-	u8 w_buf[4];
-	u8 r_buf;
-	u8 read_buffer[2] = {0};
-	int i;
-	int ret;
-	u16 raw_data;
-	int data;
-	int retry;
-	int gpio = info->pdata->gpio_int;
-
-	if (!info->enabled) {
-		info->menu_delta = 0;
-		info->back_delta = 0;
-		return;
-	}
-
-	disable_irq(info->irq);
-
-	ret = i2c_smbus_write_byte_data(info->client,
-			ADDR_UNIV_CMD, CMD_ENTER_TEST);
-	if (ret < 0)
-		goto err_i2c;
-
-	retry = 1;
-	while (retry) {
-		while (gpio_get_value(gpio))
-			udelay(100);
-
-		ret = i2c_smbus_read_i2c_block_data(info->client,
-			0x0F, 1, &r_buf);
-		if (ret < 0)
-			goto err_i2c;
-
-		ret = i2c_smbus_read_i2c_block_data(info->client,
-			0x10, 1, &r_buf);
-		if (ret < 0)
-			goto err_i2c;
-
-		dev_info(&info->client->dev, "event type = 0x%x\n", r_buf);
-		if (r_buf == 0x0C)
-			retry = 0;
-	}
-
-	w_buf[0] = ADDR_UNIV_CMD;
-	w_buf[1] = CMD_CM_DELTA;
-	ret = i2c_smbus_write_i2c_block_data(info->client,
-		 w_buf[0], 1, &w_buf[1]);
-	if (ret < 0)
-		goto err_i2c;
-	while (gpio_get_value(gpio))
-		udelay(100);
-
-	ret = i2c_smbus_read_i2c_block_data(info->client,
-		CMD_RESULT_SZ, 1, &r_buf);
-	if (ret < 0)
-		goto err_i2c;
-	ret = i2c_smbus_read_i2c_block_data(info->client,
-		CMD_RESULT, 1, &r_buf);
-	if (ret < 0)
-		goto err_i2c;
-
-	if (r_buf == 1)
-		dev_info(&info->client->dev, "PASS\n");
-	else
-		dev_info(&info->client->dev, "FAIL\n");
-
-	for (i = 0; i < 2; i++) {
-		w_buf[0] = ADDR_UNIV_CMD;
-		w_buf[1] = CMD_GET_CMDELTA_KEY;
-		w_buf[2] = i;
-		w_buf[3] = 0;
-
-		ret = i2c_smbus_write_i2c_block_data(info->client,
-			w_buf[0], 3, &w_buf[1]);
-		if (ret < 0)
-			goto err_i2c;
-		usleep_range(1, 5);
-
-		ret = i2c_smbus_read_i2c_block_data(info->client,
-			CMD_RESULT_SZ, 1, &r_buf);
-		if (ret < 0)
-			goto err_i2c;
-
-		ret = get_data(info, CMD_RESULT, r_buf, read_buffer);
-		if (ret < 0)
-			goto err_i2c;
-
-		raw_data = read_buffer[0] | (read_buffer[1] << 8);
-
-		if (raw_data < 32767)
-			data = (int)raw_data;
-		else
-			data = -(65536 - raw_data);
-
-		if (i == 0)
-			info->menu_delta = data;
-		if (i == 1)
-			info->back_delta = data;
-	}
-	ret = i2c_smbus_write_byte_data(info->client,
-		ADDR_UNIV_CMD, CMD_EXIT_TEST);
-
-	touch_is_pressed = 0;
-	release_all_fingers(info);
-	mms_reset(info);
-
-	enable_irq(info->irq);
-
-	return;
-
-err_i2c:
-	dev_err(&info->client->dev, "%s: fail to i2c (cmd=%d)\n",
-		__func__, CMD_GET_CMDELTA_KEY);
-
-	info->menu_s = 0;
-	info->back_s = 0;
-
-	release_all_fingers(info);
-	mms_reset(info);
-
-	enable_irq(info->irq);
-}
-
-static ssize_t menu_cmdelta_show(struct device *dev,
-				struct device_attribute *attr, char *buf)
-{
-	struct mms_ts_info *info = dev_get_drvdata(dev);
-
-	get_cmdelta_key(info);
-
-	return sprintf(buf, "%d\n", info->menu_delta);
-}
-
-static ssize_t back_cmdelta_show(struct device *dev,
-				struct device_attribute *attr, char *buf)
-{
-	struct mms_ts_info *info = dev_get_drvdata(dev);
-
-	get_cmdelta_key(info);
-
-	return sprintf(buf, "%d\n", info->back_delta);
 }
 
 static void get_intensity_key(struct mms_ts_info *info)
@@ -2653,7 +2556,7 @@ static void get_intensity_key(struct mms_ts_info *info)
 
 err_i2c:
 	dev_err(&info->client->dev, "%s: fail to i2c (cmd=%d)\n",
-		__func__, CMD_GET_INTEN_KEY);
+		__func__, MMS_VSC_CMD_INTENSITY);
 
 	info->menu_s = 0;
 	info->back_s = 0;
@@ -2663,6 +2566,7 @@ err_i2c:
 
 	enable_irq(info->irq);
 }
+
 
 static ssize_t touchkey_menu_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -2816,8 +2720,6 @@ static DEVICE_ATTR(cmd_result, S_IRUGO, show_cmd_result, NULL);
 static DEVICE_ATTR(touchkey_threshold, S_IRUGO, touchkey_threshold_show, NULL);
 static DEVICE_ATTR(touchkey_menu, S_IRUGO, touchkey_menu_show, NULL);
 static DEVICE_ATTR(touchkey_back, S_IRUGO, touchkey_back_show, NULL);
-static DEVICE_ATTR(touchkey_menu_cmdelta, S_IRUGO, menu_cmdelta_show, NULL);
-static DEVICE_ATTR(touchkey_back_cmdelta, S_IRUGO, back_cmdelta_show, NULL);
 #endif
 #ifdef ESD_DEBUG
 static DEVICE_ATTR(intensity_logging_on, S_IRUGO, show_intensity_logging_on,
@@ -2853,8 +2755,6 @@ static struct attribute *sec_touchkey_attributes[] = {
 	&dev_attr_touchkey_threshold.attr,
 	&dev_attr_touchkey_menu.attr,
 	&dev_attr_touchkey_back.attr,
-	&dev_attr_touchkey_menu_cmdelta.attr,
-	&dev_attr_touchkey_back_cmdelta.attr,
 #endif
 	NULL,
 };
@@ -3269,8 +3169,10 @@ static int mms_ts_suspend(struct device *dev)
 	if (!info->enabled)
 		return 0;
 
+#if DEBUG_PRINT
 	dev_notice(&info->client->dev, "%s: users=%d\n", __func__,
 		   info->input_dev->users);
+#endif
 
 	disable_irq(info->irq);
 	info->enabled = false;
@@ -3298,8 +3200,10 @@ static int mms_ts_resume(struct device *dev)
 	if (info->enabled)
 		return 0;
 
+#if DEBUG_PRINT
 	dev_notice(&info->client->dev, "%s: users=%d\n", __func__,
 		   info->input_dev->users);
+#endif
 	info->pdata->power(1);
 	msleep(120);
 
@@ -3307,10 +3211,14 @@ static int mms_ts_resume(struct device *dev)
 		mms_set_threewave_mode(info);
 
 	if (info->ta_status) {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA connect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x1);
 	} else {
+#if DEBUG_PRINT
 		dev_notice(&client->dev, "TA disconnect!!!\n");
+#endif
 		i2c_smbus_write_byte_data(info->client, 0x33, 0x2);
 	}
 	info->enabled = true;

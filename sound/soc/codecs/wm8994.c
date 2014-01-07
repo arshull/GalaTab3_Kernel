@@ -40,10 +40,16 @@
 #include "wm8994.h"
 #include "wm_hubs.h"
 
+#ifdef CONFIG_SND_BOEFFLA
+#include "boeffla_sound.h"
+#endif
+
 #define WM1811_JACKDET_MODE_NONE  0x0000
 #define WM1811_JACKDET_MODE_JACK  0x0100
 #define WM1811_JACKDET_MODE_MIC   0x0080
 #define WM1811_JACKDET_MODE_AUDIO 0x0180
+
+#define DEBUG_PRINT 0
 
 #define WM8994_NUM_DRC 3
 #define WM8994_NUM_EQ  3
@@ -193,6 +199,10 @@ static int wm8994_write(struct snd_soc_codec *codec, unsigned int reg,
 	int ret;
 
 	BUG_ON(reg > WM8994_MAX_REGISTER);
+
+#ifdef CONFIG_SND_BOEFFLA
+  value = Boeffla_sound_hook_wm8994_write(reg, value);
+#endif
 
 	if (!wm8994_volatile(codec, reg)) {
 		ret = snd_soc_cache_write(codec, reg, value);
@@ -2142,7 +2152,9 @@ static int _wm8994_set_fll(struct snd_soc_codec *codec, int id, int src,
 	u16 reg, clk1, aif_reg, aif_src;
 	unsigned long timeout;
 	bool was_enabled;
+#if DEBUG_PRINT
 	dev_info(codec->dev, "%s ++\n", __func__);
+#endif
 
 	switch (id) {
 	case WM8994_FLL1:
@@ -2306,7 +2318,9 @@ out:
 	wm8994->fll[id].src = src;
 
 	configure_clock(codec);
+#if DEBUG_PRINT
 	dev_info(codec->dev, "%s --\n", __func__);
+#endif	
 	return 0;
 }
 
@@ -4235,6 +4249,11 @@ static int wm8994_codec_probe(struct snd_soc_codec *codec)
 					ARRAY_SIZE(wm8958_intercon));
 		break;
 	}
+
+
+#ifdef CONFIG_SND_BOEFFLA
+  Boeffla_sound_hook_wm8994_pcm_probe(codec);
+#endif
 
 	return 0;
 

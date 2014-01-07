@@ -128,7 +128,7 @@
 #define SOFT_CHG_STEP_DUR       20      /* ms */
 
 #define DEFAULT_AC_CURRENT	1600	/* mA */
-#define DEFAULT_USB_CURRENT	1000	/* mA */
+#define DEFAULT_USB_CURRENT	500	/* mA */
 
 /*
 enum {

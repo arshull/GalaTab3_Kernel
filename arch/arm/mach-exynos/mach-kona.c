@@ -787,10 +787,10 @@ static struct samsung_battery_platform_data samsung_battery_pdata = {
 	.chg_curr_siop_lv1 = 1500,
 	.chg_curr_siop_lv2 = 1000,
 	.chg_curr_siop_lv3 = 500,
-	.chg_curr_usb = 1500,
+	.chg_curr_usb = 475,
 	.chg_curr_cdp = 1000,
 	.chg_curr_wpc = 475,
-	.chg_curr_etc = 1500,
+	.chg_curr_etc = 475,
 
 	/* charging param */
 	.chng_interval = 30,

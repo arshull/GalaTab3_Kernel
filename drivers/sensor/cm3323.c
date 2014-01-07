@@ -524,6 +524,7 @@ static int cm3323_i2c_probe(struct i2c_client *client,
 
 	dev_set_drvdata(cm3323->light_dev, cm3323);
 
+	pr_info("%s is success.\n", __func__);
 	goto done;
 
 /* error, unwind it all */

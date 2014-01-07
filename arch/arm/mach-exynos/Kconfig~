@@ -574,6 +574,13 @@ config NR_RUNNING_POLICY
 endchoice
 endmenu
 
+config RQ_STATS
+    bool "Enable Run queue statistics"
+    default y
+    help
+        Select this to enable scheduler rune queue statistic
+        collections
+
 menu "Busfreq Model"
 	depends on EXYNOS4_CPUFREQ || EXYNOS5_CPUFREQ
 
@@ -2058,11 +2065,13 @@ config CPU_FREQ_TETHERING
 	depends on QC_MODEM
 	default n
 
+
 config INTELLI_PLUG
-	bool "Enable intelli-plug cpu hotplug driver"
-	default n
-	help
-	  Generic Intelli-plug cpu hotplug driver for ARM SOCs
+  bool "Enable intelli-plug cpu hotplug driver"
+  default y
+  help
+    Generic Intelli-plug cpu hotplug driver for ARM SOCs
+
  
 config MACH_KONA_SENSOR
 	bool "KONA Sensor Enable"
@@ -2084,5 +2093,5 @@ config MACH_GD2_SENSOR
 	  
 config ABB_CONTROL
   bool "Adaptive body bias control"
-  depends on EXYNOS4_CPUFREQ && CPU_EXYNOS4412
+  depends on EXYNOS4_CPUFREQ && CPU_EXYNOS4212
   default y

@@ -642,14 +642,16 @@ static u8 sdhci_calc_timeout(struct sdhci_host *host, struct mmc_command *cmd)
 	if (!data && !cmd->cmd_timeout_ms)
 		return 0xE;
 
-	
 	/* timeout in us */
 	if (!data)
 		target_timeout = cmd->cmd_timeout_ms * 1000;
 	else {
-		target_timeout = data->timeout_ns / 1000;
-		if (host->clock)
-     		  target_timeout += data->timeout_clks / host->clock;
+		/* patch added for divide by zero once issue. */
+		if (host && host->clock)
+			target_timeout = data->timeout_ns / 1000 +
+				data->timeout_clks / host->clock;
+		else
+			return 0;
 	}
 
 	if (host->quirks & SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK)
@@ -2045,19 +2047,11 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask)
 		return;
 	}
 
-	if (intmask & SDHCI_INT_TIMEOUT) {
-		printk(KERN_INFO "%s: cmd %d command timeout error\n",
-			 mmc_hostname(host->mmc), host->cmd->opcode);
+	if (intmask & SDHCI_INT_TIMEOUT)
 		host->cmd->error = -ETIMEDOUT;
-	} else if (intmask & (SDHCI_INT_CRC | SDHCI_INT_END_BIT |
-			SDHCI_INT_INDEX)) {
-		printk(KERN_ERR "%s: cmd %d %s error\n",
-			mmc_hostname(host->mmc), host->cmd->opcode,
-			(intmask & SDHCI_INT_CRC) ? "command crc" :
-			(intmask & SDHCI_INT_END_BIT) ? "command end bit" :
-			"command index error");
+	else if (intmask & (SDHCI_INT_CRC | SDHCI_INT_END_BIT |
+			SDHCI_INT_INDEX))
 		host->cmd->error = -EILSEQ;
-	}
 
 
 	if (host->cmd->error) {
